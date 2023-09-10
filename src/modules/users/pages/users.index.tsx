@@ -21,8 +21,7 @@ const UserIndex = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get<User[]>('http://localhost:3300/users');
-      const data = response.data
-      setUsers(data.data);
+      setUsers(response.data.data);
     } catch (error) {
       console.log(error);
     } finally {
