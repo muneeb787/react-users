@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../../components/lodaer"
-import { DeleteIcon, UpdateIcon } from "../../../images/icon/iconsSvg";
+import { DeleteIcon, UpdateIcon, ViewIcon } from "../../../images/icon/iconsSvg";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -11,12 +11,30 @@ interface posts {
     description: string,
     likes: [],
     name: string,
-    comments: []
+    comments: [],
+    createdAt: Date,
+    user_id: {
+        name: string,
+    }
 }
+
+// Define the formatDate function
+function formatDate(createdAt: Date) {
+    const date = new Date(createdAt);
+    return date.toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+    });
+}
+
 
 const PostIndex = () => {
     const navigate = useNavigate()
-    const [posts, setPosts] = useState<posts[]>([]); // Initialize as an empty array of User objects
+    const [posts, setPosts] = useState<posts[]>([]);
     const [loader, setLoader] = useState(true);
 
     const fetchData = async () => {
@@ -75,6 +93,9 @@ const PostIndex = () => {
                                         <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                                             Total Commnets
                                         </th>
+                                        <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                                            Created At
+                                        </th>
                                         <th className="py-4 px-4 font-medium text-black dark:text-white">
                                             Actions
                                         </th>
@@ -91,21 +112,25 @@ const PostIndex = () => {
                                                     <h5 className="font-medium text-black dark:text-white">
                                                         {elem.title}
                                                     </h5>
-                                                    <p className="text-sm">Admin</p>
+                                                    <p className="text-sm">{elem.user_id?.name ?? "unknown"}</p>
+
                                                 </td>
                                                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                                                     <p className="text-black dark:text-white">{elem.likes.length}</p>
                                                 </td>
                                                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                                                    <p className="text-black dark:text-white">{elem.comments.length}</p>
+                                                </td>
+                                                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                                                     <p className="inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success">
-                                                        {elem.comments.length}
+                                                        {formatDate(elem.createdAt)}
                                                     </p>
                                                 </td>
                                                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                                                     <div className="flex items-center space-x-3.5">
-                                                        {/* <button className="hover:text-primary">
-                              <ViewIcon />
-                            </button> */}
+                                                        <button className="hover:text-primary">
+                                                            <ViewIcon />
+                                                        </button>
                                                         <button onClick={() => { deletePost(elem._id) }} className="hover:text-primary">
                                                             <DeleteIcon />
                                                         </button>
